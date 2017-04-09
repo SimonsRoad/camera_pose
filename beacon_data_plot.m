@@ -94,22 +94,22 @@ cam_loc_true(16,:) = cam_loc_true(15,:) + + cam_loc_true(16,:);
 
 cam_loc_true(:,5) = -1 * cam_loc_true(:,5);
 
-gc_locations_2d = [[0,0];
-    [8.8/3, 10.1];
-    [2*8.8/3, 20.2];
-    [8.8,30.2];
-    [8.8+13/3,30.2+26/3];
-    [8.8+26/3,30.2+52/3];
-    [21.8,56.2];
-    [21.8+16/3,56.2+23/3];
-    [21.8+32/3,56.2+46/3];
-    [37.8,79.2];
-    [37.8+15.5/3,79.2+25/3];
-    [37.8+31/3,79.2+50/3];
-    [53.3,104.2];
-    [53.3+32/3,104.2+9.5/3];
-    [53.3+64/3,104.2+19/3];
-    [85.3,113.7]];
+gc_locations_2d = [[0,0, 0];
+    [8.8/3, 10.1, 0.1];
+    [2*8.8/3, 20.2, 0.3];
+    [8.8,30.2, 0.6];
+    [8.8+13/3,30.2+26/3, 0.6];
+    [8.8+26/3,30.2+52/3, 0.1];
+    [21.8,56.2, 0.3];
+    [21.8+16/3,56.2+23/3, 0.1];
+    [21.8+32/3,56.2+46/3, 0.4];
+    [37.8,79.2, 0.3];
+    [37.8+15.5/3,79.2+25/3, 0.1,];
+    [37.8+31/3,79.2+50/3, 0.1];
+    [53.3,104.2, 0.1];
+    [53.3+32/3,104.2+9.5/3, 0.3];
+    [53.3+64/3,104.2+19/3, 0.3];
+    [85.3,113.7, 0.4]];
 
 % process ble location estimation
 real_ble_signal = zeros(16, 8);
@@ -126,7 +126,8 @@ for i = 1:16
     subplot(4,4,i)
     diffs_map = adhoc(dist0)
     [y,x] = find(min(min(diffs_map))==diffs_map);
-    ble_locations = [ble_locations; [x,y]]; % y, x
+   % ble_locations = [ble_locations; [x,y]]; % y, x
+    ble_locations = [ble_locations; [x,y, 0]]; % y, x
     imagesc(diffs_map)
     title(num2str(i))
     colormap('hot')
@@ -135,6 +136,7 @@ end
 ble_locations_scale = ble_locations*3;
 ble_locations_scale(:,1) = (75-ble_locations_scale(:,1)) * 3
 ble_locations_scale(:,2) = (105-ble_locations_scale(:,2)) * 2.5
+ble_locations_scale(:,3) = ble_locations_scale(:,3)
 
 ble_locations_scale7 = ble_locations_scale(7,:)
 ble_locations_scale8 = ble_locations_scale(8,:)
@@ -147,10 +149,14 @@ cam_locations = cam_loc_true(:, 4:6);
 
 cam_locations_2d = cam_loc_true(:, 5:6);
 
-cam_locations_2d(:,1) = cam_locations_2d(:,1) * 10 - 5; 
-cam_locations_2d(:,2) = cam_locations_2d(:,2) * 280;
+%cam_locations_2d(:,1) = cam_locations_2d(:,1) * 10 - 5; 
+%cam_locations_2d(:,2) = cam_locations_2d(:,2) * 280;
+cam_locations_2d(:,1) = cam_locations(:,2) * 10 - 5;
+cam_locations_2d(:,2) =  cam_locations(:,3) * 280;
 
 cam_locations_scale = cam_locations_2d * 3; 
+cam_locations_scale(:,3) = cam_locations(:,1);
+
 % 
 % 
 % figure;scatter(ble_locations_scale(:,1),ble_locations_scale(:,2))
@@ -176,8 +182,8 @@ cam_locations_scale = cam_locations_2d * 3;
 
 %bledist_heatmap = reshape(sqrt((ble_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (ble_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
 %camdist_heatmap = reshape(sqrt((cam_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (cam_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
-bledist_heatmap = reshape(sqrt((ble_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (ble_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
-camdist_heatmap = reshape(sqrt((cam_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (cam_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
+bledist_heatmap = reshape(sqrt((ble_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (ble_locations_scale(:,2) -  gc_locations_2d(:,2)).^2 + (ble_locations_scale(:,3) - gc_locations_2d(:,3)).^2), 4,4);
+camdist_heatmap = reshape(sqrt((cam_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (cam_locations_scale(:,2) -  gc_locations_2d(:,2)).^2 + (cam_locations_scale(:,3) - gc_locations_2d(:,3)).^2), 4,4);
 
 % figure;
 % imagesc(bledist_heatmap, [0,55])
