@@ -174,8 +174,11 @@ cam_locations_scale = cam_locations_2d * 3;
 % figure;
 % plot(sqrt((cam_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (cam_locations_scale(:,2) -  gc_locations_2d(:,2)).^2))
 
+%bledist_heatmap = reshape(sqrt((ble_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (ble_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
+%camdist_heatmap = reshape(sqrt((cam_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (cam_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
 bledist_heatmap = reshape(sqrt((ble_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (ble_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
 camdist_heatmap = reshape(sqrt((cam_locations_scale(:,1) -  gc_locations_2d(:,1)).^2 + (cam_locations_scale(:,2) -  gc_locations_2d(:,2)).^2), 4,4);
+
 % figure;
 % imagesc(bledist_heatmap, [0,55])
 % colormap('hot')
